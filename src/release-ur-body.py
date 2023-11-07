@@ -1,4 +1,4 @@
-#! /usr/bin/env python 
+#! /usr/bin/env python
 import os
 import discogs_client.client as DiscogsClient
 import discogs_client.models as DiscogsModels
@@ -35,9 +35,9 @@ class ReleaseUrBody:
             'tracks': tracks,
         }
         release = DiscogsModels.Release(self.discogs_client, data)
-        response = release.save()
-        
-        return response.json()
+        release.save()
+
+        return release
 
     def update_bandcamp_release(self, release_id, tracks):
         data = {
@@ -60,20 +60,16 @@ class ReleaseUrBody:
         parser = argparse.ArgumentParser(description='Release your music on Discogs, Musicbrainz and Bandcamp.')
         parser.add_argument('folder_path', help='The path to the folder containing your music files.')
         parser.add_argument('--discogs-release-id', help='The ID of the Discogs release to update.')
-        parser.add_argument('--bandcamp-release-id', help='The ID of the Bandcamp release to update.')
         args = parser.parse_args()
 
         if args.discogs_release_id:
             tracks = self.analyze_folder(args.folder_path)
             self.update_bandcamp_release(args.discogs_release_id, tracks)
-        elif args.bandcamp_release_id:
-            tracks = self.analyze_folder(args.folder_path)
-            self.update_bandcamp_release(args.bandcamp_release_id, tracks)
         else:
             release_name = os.path.basename(args.folder_path)
             tracks = self.analyze_folder(args.folder_path)
             discogs_release = self.create_discogs_release(args.folder_path)
-            bandcamp_release = self.create_bandcamp_release(release_name, tracks)
+            bandcamp_release = self.create_bandcamp_release()
 
 if __name__ == '__main__':
     ReleaseUrBody().command_line_interface()
