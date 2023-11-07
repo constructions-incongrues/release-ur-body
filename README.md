@@ -1,5 +1,5 @@
 # Release Your Body 🎵
 
 ```sh
-./bin/release-ur-body
+./bin/release-ur-body -h
 ```
